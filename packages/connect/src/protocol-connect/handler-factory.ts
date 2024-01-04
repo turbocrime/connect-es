@@ -248,13 +248,15 @@ function createUnaryHandler<I extends Message<I>, O extends Message<O>>(
       if (e instanceof ConnectError) {
         error = e;
       } else {
-        error = new ConnectError(
-          "internal error",
-          Code.Internal,
-          undefined,
-          undefined,
-          e,
-        );
+        error = opt.obfuscateInternalErrors
+          ? new ConnectError(
+              "internal error",
+              Code.Internal,
+              undefined,
+              undefined,
+              e,
+            )
+          : ConnectError.from(e, Code.Internal);
       }
       status = codeToHttpStatus(error.code);
       context.responseHeader.set(headerContentType, contentTypeUnaryJson);
@@ -452,13 +454,15 @@ function createStreamHandler<I extends Message<I>, O extends Message<O>>(
         if (e instanceof ConnectError) {
           end.error = e;
         } else if (e !== undefined) {
-          end.error = new ConnectError(
-            "internal error",
-            Code.Internal,
-            undefined,
-            undefined,
-            e,
-          );
+          end.error = opt.obfuscateInternalErrors
+            ? new ConnectError(
+                "internal error",
+                Code.Internal,
+                undefined,
+                undefined,
+                e,
+              )
+            : ConnectError.from(e, Code.Internal);
         }
         return {
           flags: endStreamFlag,

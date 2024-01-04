@@ -190,13 +190,15 @@ function createHandler<I extends Message<I>, O extends Message<O>>(
         } else if (e !== undefined) {
           setTrailerStatus(
             context.responseTrailer,
-            new ConnectError(
-              "internal error",
-              Code.Internal,
-              undefined,
-              undefined,
-              e,
-            ),
+            opt.obfuscateInternalErrors
+              ? new ConnectError(
+                  "internal error",
+                  Code.Internal,
+                  undefined,
+                  undefined,
+                  e,
+                )
+              : ConnectError.from(e),
           );
         }
       }),

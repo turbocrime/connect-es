@@ -116,6 +116,15 @@ export interface UniversalHandlerOptions {
    * protocol.
    */
   requireConnectProtocolHeader: boolean;
+
+  /**
+   * Errors thrown by handlers are caught and rethrown as a serializeable
+   * ConnectError. The original error message may be optionally provided to or
+   * concealed from the client. 
+   *
+   * Defaults to true.
+   */
+  obfuscateInternalErrors: boolean;
 }
 
 /**
@@ -174,6 +183,7 @@ export function validateUniversalHandlerOptions(
   const requireConnectProtocolHeader =
     opt.requireConnectProtocolHeader ?? false;
   const maxTimeoutMs = opt.maxTimeoutMs ?? Number.MAX_SAFE_INTEGER;
+  const obfuscateInternalErrors = opt.obfuscateInternalErrors ?? true;
   return {
     acceptCompression,
     ...validateReadWriteMaxBytes(
@@ -186,6 +196,7 @@ export function validateUniversalHandlerOptions(
     maxTimeoutMs,
     shutdownSignal: opt.shutdownSignal,
     requireConnectProtocolHeader,
+    obfuscateInternalErrors,
   };
 }
 
